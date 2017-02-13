@@ -60,7 +60,12 @@ public class ProfileFragment extends Fragment {
         tvProfileUsername.setText("微信号: " + username);
         EaseUserUtils.setAppUserNick(username, tvProfileNickname);
         EaseUserUtils.setAppUserAvatar(getContext(), username, ivProfileAvatar);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
     }
 
     @Override
