@@ -1,6 +1,5 @@
 package cn.ucai.superwechat.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +17,7 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.utils.MFGT;
 
-public class FriendProfileActivity extends Activity {
+public class FriendProfileActivity extends BaseActivity {
 
     @BindView(R.id.img_back)
     ImageView imgBack;
@@ -87,6 +86,7 @@ public class FriendProfileActivity extends Activity {
                 MFGT.finish(this);
                 break;
             case R.id.btn_add_contact:
+                MFGT.gotoAddFriend(this, user.getMUserName());
                 break;
             case R.id.btn_send_msg:
                 break;
