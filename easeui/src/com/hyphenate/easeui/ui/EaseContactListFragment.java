@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,7 +53,6 @@ import java.util.Map.Entry;
 
 /**
  * contact list
- *
  */
 public class EaseContactListFragment extends EaseBaseFragment {
     private static final String TAG = "EaseContactListFragment";
@@ -228,6 +228,7 @@ public class EaseContactListFragment extends EaseBaseFragment {
      * get contact list and sort, will filter out users in blacklist
      */
     protected void getContactList() {
+        Log.e(TAG, "getContactList,contactList" + contactList);
         contactList.clear();
         if (contactsMap == null) {
             return;
@@ -241,12 +242,13 @@ public class EaseContactListFragment extends EaseBaseFragment {
                 if (!entry.getKey().equals("item_new_friends")
                         && !entry.getKey().equals("item_groups")
                         && !entry.getKey().equals("item_chatroom")
+                        && !entry.getKey().equals(EMClient.getInstance().getCurrentUser())
                         && !entry.getKey().equals("item_robots")) {
 //                    if(!blackList.contains(entry.getKey())){
 //                        //filter out users in blacklist
-//                        User user = entry.getValue();
-//                        EaseCommonUtils.setUserInitialLetter(user);
-//                        contactList.add(user);
+                    User user = entry.getValue();
+                    EaseCommonUtils.setAppUserInitialLetter(user);
+                    contactList.add(user);
 //                    }
                 }
             }
@@ -270,8 +272,7 @@ public class EaseContactListFragment extends EaseBaseFragment {
 
             }
         });
-
-    }
+        Log.e(TAG, "getContactList,contactList" + contactList);    }
 
 
     protected EMConnectionListener connectionListener = new EMConnectionListener() {
@@ -313,6 +314,7 @@ public class EaseContactListFragment extends EaseBaseFragment {
 
     /**
      * set contacts map, key is the hyphenate id
+     *
      * @param contactsMap
      */
     public void setContactsMap(Map<String, User> contactsMap) {
@@ -321,7 +323,8 @@ public class EaseContactListFragment extends EaseBaseFragment {
 
     public interface EaseContactListItemClickListener {
         /**
-         * on click event for item in contact list 
+         * on click event for item in contact list
+         *
          * @param user --the user of item
          */
         void onListItemClicked(EaseUser user);
@@ -329,6 +332,7 @@ public class EaseContactListFragment extends EaseBaseFragment {
 
     /**
      * set contact list item click listener
+     *
      * @param listItemClickListener
      */
     public void setContactListItemClickListener(EaseContactListItemClickListener listItemClickListener) {
