@@ -18,6 +18,7 @@ import java.util.Map;
 
 import com.hyphenate.chat.EMClient;
 
+import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.db.InviteMessgeDao;
@@ -242,9 +243,10 @@ public class ContactListFragment extends EaseContactListFragment {
             @Override
             public void onSuccess(String s) {
                 if (s != null) {
-                    L.e(TAG,"s ="+s);
+                    L.e(TAG, "s =" + s);
                     Result result = ResultUtils.getResultFromJson(s, User.class);
                     if (result != null && result.isRetMsg()) {
+                        L.e(TAG, "result =" + result);
                         // remove user from memory and database
                         UserDao dao = new UserDao(getActivity());
                         dao.deleteAppContact(tobeDeleteUser.getMUserName());
@@ -254,7 +256,7 @@ public class ContactListFragment extends EaseContactListFragment {
                                 pd.dismiss();
                                 contactList.remove(tobeDeleteUser);
                                 contactListLayout.refresh();
-
+                                getActivity().sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
                             }
                         });
                     }
