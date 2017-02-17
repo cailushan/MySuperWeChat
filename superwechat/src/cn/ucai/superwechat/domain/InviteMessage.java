@@ -170,6 +170,23 @@ public class InviteMessage {
         String path = "http://101.251.196.90:8000/SuperWeChatServerV2.0/downloadAvatar?name_or_hxid=" + getFrom() + "&avatarType=user_avatar&m_avatar_suffix=" + getAvatarSuffix() + "&updatetime=" + getAvatarUpdateTime();
         return path;
     }
+
+    @Override
+    public String toString() {
+        return "InviteMessage{" +
+                "from='" + from + '\'' +
+                ", time=" + time +
+                ", reason='" + reason + '\'' +
+                ", usernick='" + usernick + '\'' +
+                ", avatarSuffix='" + avatarSuffix + '\'' +
+                ", AvatarUpdateTime='" + AvatarUpdateTime + '\'' +
+                ", status=" + status +
+                ", groupId='" + groupId + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", groupInviter='" + groupInviter + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }
 
 

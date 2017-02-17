@@ -46,6 +46,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -162,6 +163,7 @@ public class NewGroupActivity extends BaseActivity {
                 final String groupName = groupNameEditText.getText().toString().trim();
                 String desc = introductionEditText.getText().toString();
                 String[] members = data.getStringArrayExtra("newmembers");
+                L.e(TAG, "members =" + members);
                 try {
                     EMGroupOptions option = new EMGroupOptions();
                     option.maxUsers = 200;
@@ -177,9 +179,7 @@ public class NewGroupActivity extends BaseActivity {
                     EMGroup group = EMClient.getInstance().groupManager().createGroup(groupName, desc, members, reason, option);
 
                     String hxid = group.getGroupId();
-                    createAppGroup(group);
-
-
+                    createAppGroup(group, members);
                 } catch (final HyphenateException e) {
                     runOnUiThread(new Runnable() {
                         public void run() {
@@ -193,7 +193,7 @@ public class NewGroupActivity extends BaseActivity {
         }).start();
     }
 
-    private void createAppGroup(EMGroup group) {
+    private void createAppGroup(final EMGroup group, final String[] members) {
         NetDao.createAppGroup(this, group, file, new OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
@@ -202,7 +202,11 @@ public class NewGroupActivity extends BaseActivity {
                     Result result = ResultUtils.getResultFromJson(s, Group.class);
                     if (result != null) {
                         if (result.isRetMsg()) {
-                            createGroupSuccess();
+                            if (members != null && members.length > 0) {
+                                addGroupMembers(group.getGroupId(), members);
+                            }else {
+                                createGroupSuccess();
+                            }
                         } else {
                             progressDialog.dismiss();
                             if (result.getRetCode() == I.MSG_GROUP_HXID_EXISTS) {
@@ -225,6 +229,46 @@ public class NewGroupActivity extends BaseActivity {
         });
     }
 
+    private void addGroupMembers(String hxid, String[] members) {
+        NetDao.addGroupMembers(this, getGroupMembers(members), hxid, new OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                L.e(TAG, "s=" + s);
+                boolean success = false;
+                if (s != null) {
+                    Result result = ResultUtils.getResultFromJson(s, Group.class);
+                    if (result != null && result.isRetMsg()) {
+                        createGroupSuccess();
+                        success = true;
+                    }
+                }
+                if (!success) {
+                    progressDialog.dismiss();
+                    CommonUtils.showShortToast(R.string.Failed_to_create_groups);
+                }
+            }
+
+
+            @Override
+            public void onError(String error) {
+                progressDialog.dismiss();
+                L.e(TAG, "error=" + error);
+                CommonUtils.showShortToast(R.string.Failed_to_create_groups);
+            }
+        });
+    }
+
+    private String getGroupMembers(String[] members) {
+        String membersStr = "";
+        if (members.length > 0) {
+            for (String s : members) {
+                membersStr += s + ",";
+            }
+        }
+        L.e(TAG, "getGroupMembers...s =" + membersStr);
+        return membersStr;
+    }
+
     @OnClick({R.id.ivback, R.id.layout_group_icon})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -240,7 +284,9 @@ public class NewGroupActivity extends BaseActivity {
     public void createGroupSuccess() {
         runOnUiThread(new Runnable() {
             public void run() {
-                progressDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 setResult(RESULT_OK);
                 finish();
             }
