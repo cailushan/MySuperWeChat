@@ -293,7 +293,7 @@ public class NewGroupActivity extends BaseActivity {
             Drawable drawable = new BitmapDrawable(getResources(), bitmap);
             ivAvatar.setImageDrawable(drawable);
             String imagePath = EaseImageUtils.getImagePath(EMClient.getInstance().getCurrentUser() + I.AVATAR_SUFFIX_JPG);
-            File file = new File(imagePath);// 将要保存图片的路径
+            file = new File(imagePath);// 将要保存图片的路径
             L.e("file path =" + file.getAbsolutePath());
             try {
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
