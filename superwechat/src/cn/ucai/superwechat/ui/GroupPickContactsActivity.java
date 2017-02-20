@@ -45,10 +45,14 @@ import java.util.Comparator;
 import java.util.List;
 
 public class GroupPickContactsActivity extends BaseActivity {
-    /** if this is a new group */
+    /**
+     * if this is a new group
+     */
     protected boolean isCreatingNewGroup;
     private PickContactAdapter contactAdapter;
-    /** members already in the group */
+    /**
+     * members already in the group
+     */
     private List<String> existMembers;
 
     @Override
@@ -72,6 +76,7 @@ public class GroupPickContactsActivity extends BaseActivity {
             if (!user.getMUserName().equals(Constant.NEW_FRIENDS_USERNAME)
                     & !user.getMUserName().equals(Constant.GROUP_USERNAME)
                     & !user.getMUserName().equals(Constant.CHAT_ROOM)
+                    & !user.getMUserName().equals(EMClient.getInstance().getCurrentUser())
                     & !user.getMUserName().equals(Constant.CHAT_ROBOT))
                 alluserList.add(user);
         }
