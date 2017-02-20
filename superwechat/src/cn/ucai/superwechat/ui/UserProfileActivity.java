@@ -382,4 +382,9 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         return null;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        asyncFetchUserInfo(EMClient.getInstance().getCurrentUser());
+    }
 }
